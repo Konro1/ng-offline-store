@@ -5,8 +5,6 @@ export function userReducer(state = [], action) {
 
         case UserActions.ADD_USER_COMMIT:
             let current = action.payload;
-            console.log(current);
-            current.date = Date.now();
             current.sync = true;
             let newState = [
                 ...state,
@@ -19,7 +17,6 @@ export function userReducer(state = [], action) {
 
         case UserActions.ADD_USER_ROLLBACK:
             current = action.payload;
-            current.date = Date.now();
             current.sync = false;
             newState = [
                 ...state,

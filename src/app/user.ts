@@ -1,6 +1,6 @@
 export interface User {
     firstName: string;
     lastName: string;
-    date?: string;
+    date?: number;
     sync?: boolean;
 }

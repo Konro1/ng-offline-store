@@ -17,8 +17,6 @@ export interface AppState {
 
 export class AppComponent implements OnInit{
 
-    title = 'app';
-
     usersStore: Observable<User>;
 
     firstName = 'first';
@@ -36,7 +34,8 @@ export class AppComponent implements OnInit{
     add() {
         const action = this.userActions.addUser({
             firstName: this.firstName,
-            lastName: this.lastName
+            lastName: this.lastName,
+            date: Date.now()
         });
 
         this.httpService.makeRequest(this.usersStore, action)
