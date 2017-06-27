@@ -3,11 +3,12 @@ import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
 import {StoreModule} from '@ngrx/store';
-import {userReducer} from './user';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {FormsModule} from '@angular/forms';
-import {UserService} from './services/user.service';
 import {HttpModule} from '@angular/http';
+import {UserActions} from './actions/user.action';
+import {userReducer} from './reducers/user.reducers';
+import {HttpService} from './services/http.service';
 
 @NgModule({
     declarations: [
@@ -20,7 +21,7 @@ import {HttpModule} from '@angular/http';
         StoreModule.provideStore({ user: userReducer }),
         StoreDevtoolsModule.instrumentOnlyWithExtension()
     ],
-    providers: [UserService],
+    providers: [UserActions, HttpService],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

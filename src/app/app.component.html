@@ -5,5 +5,5 @@
 <button (click)="add()">Add</button>
 
 <ul>
-    <li *ngFor="let user of users | async">{{ user.firstName }} {{ user.lastName }} {{ user.date }}</li>
+    <li *ngFor="let user of usersStore | async">{{ user.firstName }} {{ user.lastName }} {{ user.date }}</li>
 </ul>
