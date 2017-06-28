@@ -5,6 +5,8 @@ import {Store} from '@ngrx/store';
 import {UserActions} from './actions/user.action';
 import {HttpService} from './services/http.service';
 
+declare let localforage: any;
+
 export interface AppState {
     user: User;
 }
@@ -28,7 +30,14 @@ export class AppComponent implements OnInit{
 
     ngOnInit(): void {
         const action = this.userActions.getUsers();
-        this.httpService.makeRequest(this.usersStore, action)
+        this.httpService.makeRequest(this.usersStore, action);
+      localforage.setItem('key', 'value').then(function () {
+        return localforage.getItem('key');
+      }).then(function (value) {
+        console.log(value);
+      }).catch(function (err) {
+        console.error(err);
+      });
     }
 
     add() {

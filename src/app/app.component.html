@@ -7,3 +7,7 @@
 <ul>
     <li *ngFor="let user of usersStore | async">{{ user.firstName }} {{ user.lastName }} {{ user.date }}</li>
 </ul>
+
+<video autoplay #videoBlock></video>
+
+<input type="file" accept="image/*;capture=camera">
