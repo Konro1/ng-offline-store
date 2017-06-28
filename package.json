@@ -4,12 +4,13 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
+    "sw": "sw-precache --root=src --config=sw-precache-config.js",
     "start": "ng serve",
     "build": "ng build",
+    "full": "concurrently \"npm run sw\" \"ng build\"",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "sw": "sw-precache --root=dist --config=sw-precache-config.js",
     "static-serve": "cd dist && live-server --port=4200 --host=localhost --entry-file=/index.html"
   },
   "private": true,
@@ -25,6 +26,7 @@
     "@angular/router": "^4.0.0",
     "@ngrx/core": "^1.2.0",
     "@ngrx/store": "^2.2.2",
+    "concurrently": "^3.5.0",
     "core-js": "^2.4.1",
     "rxjs": "^5.1.0",
     "zone.js": "^0.8.4"
