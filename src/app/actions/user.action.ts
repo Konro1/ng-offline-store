@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {User} from '../user';
+import {User} from '../interfaces/user';
 
 @Injectable()
 
@@ -12,6 +12,21 @@ export class UserActions {
     static GET_USER_REQUEST = 'GET_USER_REQUEST';
     static GET_USER_COMMIT = 'GET_USER_COMMIT';
     static GET_USER_ROLLBACK = 'GET_USER_ROLLBACK';
+
+    public static getAddUserAction(user) {
+        return {
+            type: UserActions.ADD_USER_REQUEST,
+            payload: user,
+            meta: {
+                // the network action to execute:
+                effect: {url: '/api/users', method: 'POST', body: user},
+                // action to dispatch when effect succeeds:
+                commit: {type: UserActions.ADD_USER_COMMIT, payload: user},
+                // action to dispatch if network action fails permanently:
+                rollback: {type: UserActions.ADD_USER_ROLLBACK, payload: user}
+            }
+        };
+    }
 
     public addUser(user: User) {
         return {

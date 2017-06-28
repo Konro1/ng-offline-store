@@ -1,4 +1,6 @@
 import {UserActions} from '../actions/user.action';
+import {Inject} from '@angular/core';
+
 
 export function userReducer(state = [], action) {
     switch (action.type) {
@@ -23,7 +25,17 @@ export function userReducer(state = [], action) {
                 Object.assign({}, current)
             ];
 
-            localStorage.setItem('users', JSON.stringify(newState));
+            // localStorage.setItem('users', JSON.stringify(newState));
+
+            const unsyncedAction = UserActions.getAddUserAction(action.payload);
+            const storedItems = localStorage.getItem('unsyncedActions');
+            if (storedItems) {
+                const stored = JSON.parse(storedItems);
+                stored.push(unsyncedAction);
+                localStorage.setItem('unsyncedActions', JSON.stringify(stored));
+            } else {
+                localStorage.setItem('unsyncedActions', JSON.stringify([unsyncedAction]));
+            }
 
             return newState;
 

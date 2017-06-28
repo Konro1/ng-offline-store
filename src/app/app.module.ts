@@ -11,6 +11,7 @@ import {HttpService} from './services/http.service';
 import reducer from './reducers/index';
 import {NetworkService} from './services/network.service';
 import {QueueService} from './services/queue.service';
+import {UnsyncedActions} from './actions/unsynced.action';
 
 export function initQueueService(queueService: QueueService): any {
     return () => {
@@ -31,6 +32,7 @@ export function initQueueService(queueService: QueueService): any {
     ],
     providers: [
         UserActions,
+        UnsyncedActions,
         HttpService,
         NetworkService,
         QueueService,
