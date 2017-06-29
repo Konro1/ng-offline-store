@@ -19,9 +19,6 @@ export class QueueService {
         private httpService: HttpService
     ) {
         if (!this.subscription) {
-            this.queue = store.select('unsyncedActions');
-            this.queue.dispatch(this.unsyncedActions.getActions());
-
             this.networkService.status.subscribe(isOnline => {
                 if (isOnline) {
                     this.getStoredActions()
@@ -38,11 +35,14 @@ export class QueueService {
     }
 
     private getStoredActions() {
-        this.queue.forEach(actions => {
-            actions.forEach(action => {
-                this.httpService.makeRequest(this.store, action)
+        console.log('___getStoredActions___');
+        const items = localStorage.getItem('unsyncedActions');
+        if (items) {
+            const actionsArray = JSON.parse(items);
+            actionsArray.forEach(action => {
+                this.httpService.makeRequest(this.store, action);
             })
-        })
+        }
 
         // @todo FOR NOW CLEAR ALL IN FEATURE NEED TO DELETE ACTIONS FROM STORAGE AFTER SUCCESS REQUEST
         localStorage.removeItem('unsyncedActions')
