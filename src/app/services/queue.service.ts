@@ -5,6 +5,8 @@ import {AppState} from '../interfaces/appstate';
 import {UnsyncedActions} from '../actions/unsynced.action';
 import {HttpService} from './http.service';
 
+declare let localforage: any;
+
 @Injectable()
 
 export class QueueService {
@@ -36,15 +38,28 @@ export class QueueService {
 
     private getStoredActions() {
         console.log('___getStoredActions___');
-        const items = localStorage.getItem('unsyncedActions');
-        if (items) {
-            const actionsArray = JSON.parse(items);
-            actionsArray.forEach(action => {
-                this.httpService.makeRequest(this.store, action);
+        // const items = localStorage.getItem('unsyncedActions');
+        // if (items) {
+        //     const actionsArray = JSON.parse(items);
+        //     actionsArray.forEach(action => {
+        //         this.httpService.makeRequest(this.store, action);
+        //     })
+        // }
+
+        localforage.getItem('unsyncedActions')
+            .then(unsyncedActions => {
+                const actionsArray = JSON.parse(unsyncedActions) || [];
+                actionsArray.forEach(action => {
+                    this.httpService.makeRequest(this.store, action);
+                });
+                localforage.removeItem('unsyncedActions');
             })
-        }
+            .catch(err => {
+                console.error(err);
+                localforage.removeItem('unsyncedActions');
+            })
 
         // @todo FOR NOW CLEAR ALL IN FEATURE NEED TO DELETE ACTIONS FROM STORAGE AFTER SUCCESS REQUEST
-        localStorage.removeItem('unsyncedActions')
+        //localStorage.removeItem('unsyncedActions');
     }
 }

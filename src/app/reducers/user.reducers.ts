@@ -35,19 +35,30 @@ export function userReducer(state = [], action) {
             const unsyncedAction = UserActions.getAddUserAction(action.payload);
             //const storedItems = localStorage.getItem('unsyncedActions');
 
-            localforage.getItem('unsyncedActions', (err, storedItems) => {
-              if (err) {
+            // localforage.getItem('unsyncedActions', (err, storedItems) => {
+            //   if (err) {
+            //
+            //   }
+            //
+            //   if (storedItems) {
+            //       const stored = JSON.parse(storedItems);
+            //       stored.push(unsyncedAction);
+            //       localStorage.setItem('unsyncedActions', JSON.stringify(stored));
+            //   } else {
+            //       localStorage.setItem('unsyncedActions', JSON.stringify([unsyncedAction]));
+            //   }
+            // });
 
-              }
 
-              if (storedItems) {
-                  const stored = JSON.parse(storedItems);
+            localforage.getItem('unsyncedActions')
+                .then(storedItems => {
+                  let stored = JSON.parse(storedItems) || [];
                   stored.push(unsyncedAction);
-                  localStorage.setItem('unsyncedActions', JSON.stringify(stored));
-              } else {
-                  localStorage.setItem('unsyncedActions', JSON.stringify([unsyncedAction]));
-              }
-            });
+                  localforage.setItem('unsyncedActions', JSON.stringify(stored))
+                })
+                .catch(err => {
+                  console.error(err);
+                });
 
 
             return newState;
@@ -57,12 +68,20 @@ export function userReducer(state = [], action) {
             return state.concat(action.payload.users);
 
         case UserActions.GET_USER_ROLLBACK:
-            const items = localStorage.getItem('users');
-            if (items) {
-                return JSON.parse(items);
-            }
+            // const items = localStorage.getItem('users');
+            // if (items) {
+            //     return JSON.parse(items);
+            // }
+            //
+            // return state;
 
-            return state;
+            localforage.getItem('users')
+                .then(users => {
+                    return JSON.parse(users) || state;
+                })
+                .cache(err => {
+                    return state;
+                })
 
         default:
             return state;
