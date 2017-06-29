@@ -1,43 +1,19 @@
 import {UserActions} from '../actions/user.action';
-import {Inject} from '@angular/core';
+import {Action} from '@ngrx/store';
 
-
-export function userReducer(state = [], action) {
+export function userReducer(state = [], action: Action) {
     switch (action.type) {
 
+        case 'ADD_USER_ERRORED':
+            return [...state, action.payload];
+
         case UserActions.ADD_USER_COMMIT:
-            let current = action.payload;
-            current.sync = true;
-            let newState = [
-                ...state,
-                Object.assign({}, current)
-            ];
 
-            localStorage.setItem('users', JSON.stringify(newState));
-
-            return newState;
+            return [...state, action.payload];
 
         case UserActions.ADD_USER_ROLLBACK:
-            current = action.payload;
-            current.sync = false;
-            newState = [
-                ...state,
-                Object.assign({}, current)
-            ];
 
-            // localStorage.setItem('users', JSON.stringify(newState));
-
-            const unsyncedAction = UserActions.getAddUserAction(action.payload);
-            const storedItems = localStorage.getItem('unsyncedActions');
-            if (storedItems) {
-                const stored = JSON.parse(storedItems);
-                stored.push(unsyncedAction);
-                localStorage.setItem('unsyncedActions', JSON.stringify(stored));
-            } else {
-                localStorage.setItem('unsyncedActions', JSON.stringify([unsyncedAction]));
-            }
-
-            return newState;
+            return [...state, action.payload];
 
         case UserActions.GET_USER_COMMIT:
 
@@ -48,6 +24,7 @@ export function userReducer(state = [], action) {
             if (items) {
                 return JSON.parse(items);
             }
+            console.log('I am here');
 
             return state;
 

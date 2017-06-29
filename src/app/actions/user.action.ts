@@ -57,5 +57,18 @@ export class UserActions {
         };
     };
 
+    public loadUserSuccess(users) {
+        return {
+            type: UserActions.GET_USER_COMMIT,
+            payload: users
+        };
+    }
+
+    public addUserSuccess(user) {
+        return {
+            type: UserActions.ADD_USER_COMMIT,
+            payload: user
+        };
+    }
 }
 
