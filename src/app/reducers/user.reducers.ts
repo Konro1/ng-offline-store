@@ -1,6 +1,8 @@
 import {UserActions} from '../actions/user.action';
 import {Inject} from '@angular/core';
+import { Observable } from "rxjs";
 
+declare let localforage: any;
 
 export function userReducer(state = [], action) {
     switch (action.type) {
@@ -13,7 +15,10 @@ export function userReducer(state = [], action) {
                 Object.assign({}, current)
             ];
 
-            localStorage.setItem('users', JSON.stringify(newState));
+            localforage.setItem('users', JSON.stringify(newState), function (err) {
+              if(err) Observable.throw(err);
+            });
+            /*localStorage.setItem('users', JSON.stringify(newState));*/
 
             return newState;
 
@@ -28,14 +33,22 @@ export function userReducer(state = [], action) {
             // localStorage.setItem('users', JSON.stringify(newState));
 
             const unsyncedAction = UserActions.getAddUserAction(action.payload);
-            const storedItems = localStorage.getItem('unsyncedActions');
-            if (storedItems) {
-                const stored = JSON.parse(storedItems);
-                stored.push(unsyncedAction);
-                localStorage.setItem('unsyncedActions', JSON.stringify(stored));
-            } else {
-                localStorage.setItem('unsyncedActions', JSON.stringify([unsyncedAction]));
-            }
+            //const storedItems = localStorage.getItem('unsyncedActions');
+
+            localforage.getItem('unsyncedActions', (err, storedItems) => {
+              if (err) {
+
+              }
+
+              if (storedItems) {
+                  const stored = JSON.parse(storedItems);
+                  stored.push(unsyncedAction);
+                  localStorage.setItem('unsyncedActions', JSON.stringify(stored));
+              } else {
+                  localStorage.setItem('unsyncedActions', JSON.stringify([unsyncedAction]));
+              }
+            });
+
 
             return newState;
 

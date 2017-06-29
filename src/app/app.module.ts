@@ -13,6 +13,9 @@ import {NetworkService} from './services/network.service';
 import {QueueService} from './services/queue.service';
 import {UnsyncedActions} from './actions/unsynced.action';
 
+
+import * as localforage from 'localforage';
+
 export function initQueueService(queueService: QueueService): any {
     return () => {
         return queueService.load();
@@ -31,6 +34,7 @@ export function initQueueService(queueService: QueueService): any {
         StoreDevtoolsModule.instrumentOnlyWithExtension()
     ],
     providers: [
+        { provide: 'localforage', useValue: localforage },
         UserActions,
         UnsyncedActions,
         HttpService,
