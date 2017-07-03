@@ -51,12 +51,13 @@ export class QueueService {
         if (items) {
             const actionsArray = JSON.parse(items);
             actionsArray.forEach(action => {
-                console.log(action);
-                console.log(this.store.dispatch(action));
+                setTimeout(() => {
+                    this.store.dispatch(action);
+                }, 100)
             });
         }
         //
         // // @todo FOR NOW CLEAR ALL IN FEATURE NEED TO DELETE ACTIONS FROM STORAGE AFTER SUCCESS REQUEST
-        // localStorage.removeItem('unsyncedActions')
+        localStorage.removeItem('unsyncedActions')
     }
 }
