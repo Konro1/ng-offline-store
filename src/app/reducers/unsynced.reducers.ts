@@ -6,11 +6,11 @@ export function unsyncedReducer(state = [], action: UnsyncedAction) {
         case UnsyncedActions.GET:
             const items = localStorage.getItem('unsyncedActions');
             if (items) {
-
                 return JSON.parse(items);
             }
 
             return state;
+
         default:
 
             return state;
