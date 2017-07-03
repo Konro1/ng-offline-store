@@ -25,7 +25,8 @@
         "styles.css"
       ],
       "scripts": [
-        "../node_modules/localforage/dist/localforage.js"
+        "../node_modules/localforage/dist/localforage.js",
+        "../node_modules/quagga/dist/quagga.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

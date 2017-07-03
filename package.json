@@ -28,6 +28,8 @@
     "@ngrx/store": "^2.2.2",
     "concurrently": "^3.5.0",
     "core-js": "^2.4.1",
+    "ngx-barcode": "^0.2.2",
+    "quagga": "^0.12.1",
     "rxjs": "^5.1.0",
     "zone.js": "^0.8.4"
   },

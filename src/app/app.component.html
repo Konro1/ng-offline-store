@@ -9,3 +9,10 @@
 <ul>
     <li *ngFor="let user of usersStore | async">{{ user.firstName }} {{ user.lastName }} {{ user.date }}</li>
 </ul>
+
+
+<input type="text" [(ngModel)]="value">
+<ngx-barcode [bc-value]="value" [bc-display-value]="true"></ngx-barcode>
+
+
+<div id="yourElement"></div>
