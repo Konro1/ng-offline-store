@@ -3,6 +3,8 @@ import {NetworkService} from './network.service';
 import {Store} from '@ngrx/store';
 import {AppState} from '../interfaces/appstate';
 
+declare let localforage: any;
+
 @Injectable()
 
 export class QueueService {
@@ -31,7 +33,6 @@ export class QueueService {
     public saveActionInQue(action) {
         const items = localStorage.getItem('unsyncedActions');
         let actionsArray = [];
-        console.log(action);
         if (items) {
             actionsArray = JSON.parse(items);
             actionsArray
@@ -44,20 +45,22 @@ export class QueueService {
             actionsArray = [action];
         }
 
-        localStorage.setItem('unsyncedActions', JSON.stringify(actionsArray));
+        localforage.setItem('unsyncedActions', JSON.stringify(actionsArray));
     }
 
     private getStoredActions() {
         console.log('___getStoredActions___');
-        const items = localStorage.getItem('unsyncedActions');
-        if (items) {
-            const actionsArray = JSON.parse(items);
-            actionsArray.forEach(action => {
-                console.log(action);
+
+        localforage.getItem('unsyncedActions').then(items => {
+            if (items) {
+                const actionsArray = JSON.parse(items);
+                actionsArray.forEach(action => {
                     this.store.dispatch(action);
-            });
-        }
-        // @todo FOR NOW CLEAR ALL IN FEATURE NEED TO DELETE ACTIONS FROM STORAGE AFTER SUCCESS REQUEST
-        localStorage.removeItem('unsyncedActions')
+                });
+            }
+        });
+
+        // @todo FOR NOW CLEAR ALL, IN FEATURE NEED TO DELETE ACTIONS FROM STORAGE AFTER SUCCESS REQUEST
+        localforage.removeItem('unsyncedActions');
     }
 }

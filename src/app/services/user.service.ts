@@ -42,7 +42,6 @@ export class UserService {
         this.addUser(users[index]).subscribe((response) => {
             res.push(response);
             if (index < users.length - 1) {
-                console.log(index);
                 this.syncUsers(users, ++index);
             }
         });

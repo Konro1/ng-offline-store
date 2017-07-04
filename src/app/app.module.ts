@@ -15,6 +15,9 @@ import {EffectsModule} from '@ngrx/effects';
 import {UserEffects} from './effects/user';
 import {UserService} from './services/user.service';
 
+
+import * as localforage from 'localforage';
+
 export function initQueueService(queueService: QueueService): any {
     return () => {
         return queueService.load();
@@ -35,6 +38,7 @@ export function initQueueService(queueService: QueueService): any {
         EffectsModule.run(UserEffects)
     ],
     providers: [
+        { provide: 'localforage', useValue: localforage },
         UserActions,
         HttpService,
         UserService,
