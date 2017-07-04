@@ -1,0 +1,11 @@
+{
+  "HOME": {
+    "TITLE": "Hello, it is demo!",
+    "SELECT": "Change language",
+    "ONLINE": "Online",
+    "OFFLINE": "Offline",
+    "FIRST_NAME": "First Name",
+    "LAST_NAME": "Last Name",
+    "ADD": "Add"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "HOME": {
+    "TITLE": "Bonjour, c'est une démo!",
+    "SELECT": "Changer la langue",
+    "ONLINE": "En ligne",
+    "OFFLINE": "Hors ligne",
+    "FIRST_NAME": "Prénom",
+    "LAST_NAME": "Nom de famille",
+    "ADD": "Ajouter"
+  }
+}

@@ -5,7 +5,7 @@ import {AppComponent} from './app.component';
 import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
+import {Http, HttpModule} from '@angular/http';
 import {UserActions} from './actions/user.action';
 import {HttpService} from './services/http.service';
 import reducer from './reducers/index';
@@ -13,10 +13,12 @@ import {NetworkService} from './services/network.service';
 import {QueueService} from './services/queue.service';
 import {UnsyncedActions} from './actions/unsynced.action';
 import {NgxBarcodeModule} from 'ngx-barcode';
-
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 import * as localforage from 'localforage';
 import Quagga from 'quagga';
+import {TestComponent} from './test.component';
 
 export function initQueueService(queueService: QueueService): any {
     return () => {
@@ -24,9 +26,15 @@ export function initQueueService(queueService: QueueService): any {
     }
 }
 
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: Http) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '-lang.json');
+}
+
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        TestComponent
     ],
     imports: [
         BrowserModule,
@@ -34,7 +42,14 @@ export function initQueueService(queueService: QueueService): any {
         HttpModule,
         StoreModule.provideStore( reducer ),
         StoreDevtoolsModule.instrumentOnlyWithExtension(),
-        NgxBarcodeModule
+        NgxBarcodeModule,
+        TranslateModule.forRoot({
+            loader: {
+              provide: TranslateLoader,
+              useFactory: HttpLoaderFactory,
+              deps: [Http]
+            }
+        })
     ],
     providers: [
         { provide: 'localforage', useValue: localforage },

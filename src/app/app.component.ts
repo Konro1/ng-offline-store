@@ -6,6 +6,7 @@ import {HttpService} from './services/http.service';
 import {NetworkService} from './services/network.service';
 import {AppState} from './interfaces/appstate';
 import {User} from './interfaces/user';
+import {TranslateService} from '@ngx-translate/core';
 
 declare let Quagga: any;
 
@@ -24,9 +25,19 @@ export class AppComponent implements OnInit {
     public lastName = 'last';
     public networkStatus;
 
-    constructor(private store: Store<AppState>, private userActions: UserActions, private httpService: HttpService,
-                private networkService: NetworkService) {
+    constructor(
+        private store: Store<AppState>,
+        private userActions: UserActions,
+        private httpService: HttpService,
+        private networkService: NetworkService,
+        private translate: TranslateService) {
         this.usersStore = store.select('user');
+
+        translate.addLangs(['en', 'fr', 'es']);
+        translate.setDefaultLang('en');
+
+        const browserLang = translate.getBrowserLang();
+        translate.use(browserLang.match(/en|fr|es/) ? browserLang : 'en');
     }
 
     ngOnInit(): void {
@@ -37,7 +48,7 @@ export class AppComponent implements OnInit {
 
 
 
-      Quagga.init({
+      /*Quagga.init({
         inputStream : {
           name : "Live",
           type : "LiveStream",
@@ -53,7 +64,7 @@ export class AppComponent implements OnInit {
         }
         console.log("Initialization finished. Ready to start");
         Quagga.start();
-      });
+      });*/
     }
 
     add() {
