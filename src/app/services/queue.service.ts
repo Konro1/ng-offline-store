@@ -31,21 +31,21 @@ export class QueueService {
     }
 
     public saveActionInQue(action) {
-        const items = localStorage.getItem('unsyncedActions');
-        let actionsArray = [];
-        if (items) {
-            actionsArray = JSON.parse(items);
-            actionsArray
-                .filter((item) => item.type === action.type)
-                .map(item => {
-                    item.payload.push(action.payload);
-                })
-        } else {
-            action.payload = [action.payload];
-            actionsArray = [action];
-        }
-
-        localforage.setItem('unsyncedActions', JSON.stringify(actionsArray));
+        localforage.getItem('unsyncedActions').then(items => {
+            let actionsArray = [];
+            if (items) {
+                actionsArray = JSON.parse(items);
+                actionsArray
+                    .filter((item) => item.type === action.type)
+                    .map(item => {
+                        item.payload.push(action.payload);
+                    })
+            } else {
+                action.payload = [action.payload];
+                actionsArray = [action];
+            }
+            localforage.setItem('unsyncedActions', JSON.stringify(actionsArray));
+        });
     }
 
     private getStoredActions() {
