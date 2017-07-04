@@ -5,7 +5,6 @@ declare let localforage: any;
 
 export function userReducer(state = [], action: Action) {
     switch (action.type) {
-
         case 'ADD_USER_ERRORED':
             return [...state, action.payload];
 
@@ -22,7 +21,7 @@ export function userReducer(state = [], action: Action) {
             localforage.getItem('users').then(users => {
                 return JSON.parse(users) || state;
             })
-            .cache(err => {
+            .catch(err => {
                 return state;
             });
             break;
