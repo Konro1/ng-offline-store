@@ -2,8 +2,6 @@ import {Injectable} from '@angular/core';
 import {NetworkService} from './network.service';
 import {Store} from '@ngrx/store';
 import {AppState} from '../interfaces/appstate';
-import {UnsyncedActions} from '../actions/unsynced.action';
-import {HttpService} from './http.service';
 
 declare let localforage: any;
 
@@ -14,12 +12,8 @@ export class QueueService {
     queue;
     private subscription = false;
 
-    constructor(
-        private store: Store<AppState>,
-        private networkService: NetworkService,
-        private unsyncedActions: UnsyncedActions,
-        private httpService: HttpService
-    ) {
+    constructor(private store: Store<AppState>,
+                private networkService: NetworkService) {
         if (!this.subscription) {
             this.networkService.status.subscribe(isOnline => {
                 if (isOnline) {
@@ -36,30 +30,37 @@ export class QueueService {
         });
     }
 
+    public saveActionInQue(action) {
+        const items = localStorage.getItem('unsyncedActions');
+        let actionsArray = [];
+        if (items) {
+            actionsArray = JSON.parse(items);
+            actionsArray
+                .filter((item) => item.type === action.type)
+                .map(item => {
+                    item.payload.push(action.payload);
+                })
+        } else {
+            action.payload = [action.payload];
+            actionsArray = [action];
+        }
+
+        localforage.setItem('unsyncedActions', JSON.stringify(actionsArray));
+    }
+
     private getStoredActions() {
         console.log('___getStoredActions___');
-        // const items = localStorage.getItem('unsyncedActions');
-        // if (items) {
-        //     const actionsArray = JSON.parse(items);
-        //     actionsArray.forEach(action => {
-        //         this.httpService.makeRequest(this.store, action);
-        //     })
-        // }
 
-        localforage.getItem('unsyncedActions')
-            .then(unsyncedActions => {
-                const actionsArray = JSON.parse(unsyncedActions) || [];
+        localforage.getItem('unsyncedActions').then(items => {
+            if (items) {
+                const actionsArray = JSON.parse(items);
                 actionsArray.forEach(action => {
-                    this.httpService.makeRequest(this.store, action);
+                    this.store.dispatch(action);
                 });
-                localforage.removeItem('unsyncedActions');
-            })
-            .catch(err => {
-                console.error(err);
-                localforage.removeItem('unsyncedActions');
-            })
+            }
+        });
 
-        // @todo FOR NOW CLEAR ALL IN FEATURE NEED TO DELETE ACTIONS FROM STORAGE AFTER SUCCESS REQUEST
-        //localStorage.removeItem('unsyncedActions');
+        // @todo FOR NOW CLEAR ALL, IN FEATURE NEED TO DELETE ACTIONS FROM STORAGE AFTER SUCCESS REQUEST
+        localforage.removeItem('unsyncedActions');
     }
 }

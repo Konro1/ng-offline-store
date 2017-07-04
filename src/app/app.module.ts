@@ -11,7 +11,9 @@ import {HttpService} from './services/http.service';
 import reducer from './reducers/index';
 import {NetworkService} from './services/network.service';
 import {QueueService} from './services/queue.service';
-import {UnsyncedActions} from './actions/unsynced.action';
+import {EffectsModule} from '@ngrx/effects';
+import {UserEffects} from './effects/user';
+import {UserService} from './services/user.service';
 
 
 import * as localforage from 'localforage';
@@ -31,13 +33,15 @@ export function initQueueService(queueService: QueueService): any {
         FormsModule,
         HttpModule,
         StoreModule.provideStore( reducer ),
-        StoreDevtoolsModule.instrumentOnlyWithExtension()
+        EffectsModule,
+        StoreDevtoolsModule.instrumentOnlyWithExtension(),
+        EffectsModule.run(UserEffects)
     ],
     providers: [
         { provide: 'localforage', useValue: localforage },
         UserActions,
-        UnsyncedActions,
         HttpService,
+        UserService,
         NetworkService,
         QueueService,
         {
