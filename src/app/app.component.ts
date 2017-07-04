@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
 import {UserActions} from './actions/user.action';
-import {HttpService} from './services/http.service';
 import {NetworkService} from './services/network.service';
 import {AppState} from './interfaces/appstate';
 import {User} from './interfaces/user';
@@ -28,10 +27,10 @@ export class AppComponent implements OnInit {
     constructor(
         private store: Store<AppState>,
         private userActions: UserActions,
-        private httpService: HttpService,
         private networkService: NetworkService,
         private translate: TranslateService) {
         this.usersStore = store.select('user');
+        networkService.status.subscribe((isOnline: boolean) => this.networkStatus = isOnline);
 
         translate.addLangs(['en', 'fr', 'es']);
         translate.setDefaultLang('en');
@@ -42,29 +41,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         const action = this.userActions.getUsers();
-        this.httpService.makeRequest(this.usersStore, action)
-        this.networkService.status.subscribe(isOnline => {this.networkStatus = isOnline});
-
-
-
-
-      /*Quagga.init({
-        inputStream : {
-          name : "Live",
-          type : "LiveStream",
-          target: document.querySelector('#yourElement')    // Or '#yourElement' (optional)
-        },
-        decoder : {
-          readers : ["code_128_reader"]
-        }
-      }, function(err) {
-        if (err) {
-          console.log(err);
-          return
-        }
-        console.log("Initialization finished. Ready to start");
-        Quagga.start();
-      });*/
+        this.store.dispatch(action);
     }
 
     add() {
@@ -74,6 +51,6 @@ export class AppComponent implements OnInit {
             date: Date.now()
         });
 
-        this.httpService.makeRequest(this.usersStore, action)
+        this.store.dispatch(action);
     }
 }

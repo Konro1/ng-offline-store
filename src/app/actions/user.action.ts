@@ -1,11 +1,13 @@
 import {Injectable} from '@angular/core';
 import {User} from '../interfaces/user';
+import {QueuedActions} from './queued.actions';
 
 @Injectable()
 
-export class UserActions {
+export class UserActions extends QueuedActions {
 
     static ADD_USER_REQUEST = 'ADD_USER_REQUEST';
+    static ADD_USER_REQUEST_SYNC = 'ADD_USER_REQUEST_SYNC';
     static ADD_USER_COMMIT = 'ADD_USER_COMMIT';
     static ADD_USER_ROLLBACK = 'ADD_USER_ROLLBACK';
 
@@ -57,5 +59,18 @@ export class UserActions {
         };
     };
 
+    public loadUserSuccess(users) {
+        return {
+            type: UserActions.GET_USER_COMMIT,
+            payload: users
+        };
+    }
+
+    public addUserSuccess(user) {
+        return {
+            type: UserActions.ADD_USER_COMMIT,
+            payload: user
+        };
+    }
 }
 
