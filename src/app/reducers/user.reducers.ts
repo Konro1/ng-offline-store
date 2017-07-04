@@ -8,7 +8,7 @@ export function userReducer(state = [], action: Action) {
             return [...state, action.payload];
 
         case UserActions.ADD_USER_COMMIT:
-
+console.log(action.payload);
             return [...state, action.payload];
 
         case UserActions.ADD_USER_ROLLBACK:

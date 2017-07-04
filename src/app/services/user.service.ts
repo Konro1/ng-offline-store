@@ -31,4 +31,22 @@ export class UserService {
         return this.http.delete(this.BASE_URL + '/api/users/' + hero.id)
             .map(res => hero);
     }
+
+    syncUsers(users, index = 0) {
+        const res = [];
+        if (!users.length) {
+
+            return Observable.merge(res);
+        }
+
+        this.addUser(users[index]).subscribe((response) => {
+            res.push(response);
+            if (index < users.length - 1) {
+                console.log(index);
+                this.syncUsers(users, ++index);
+            }
+        });
+
+        return Observable.merge(res);
+    }
 }

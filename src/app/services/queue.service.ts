@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {NetworkService} from './network.service';
 import {Store} from '@ngrx/store';
 import {AppState} from '../interfaces/appstate';
-import {UnsyncedActions} from '../actions/unsynced.action';
 
 @Injectable()
 
@@ -11,11 +10,8 @@ export class QueueService {
     queue;
     private subscription = false;
 
-    constructor(
-        private store: Store<AppState>,
-        private networkService: NetworkService,
-        private unsyncedActions: UnsyncedActions
-    ) {
+    constructor(private store: Store<AppState>,
+                private networkService: NetworkService) {
         if (!this.subscription) {
             this.networkService.status.subscribe(isOnline => {
                 if (isOnline) {
@@ -35,10 +31,16 @@ export class QueueService {
     public saveActionInQue(action) {
         const items = localStorage.getItem('unsyncedActions');
         let actionsArray = [];
+        console.log(action);
         if (items) {
             actionsArray = JSON.parse(items);
-            actionsArray.push(action);
+            actionsArray
+                .filter((item) => item.type === action.type)
+                .map(item => {
+                    item.payload.push(action.payload);
+                })
         } else {
+            action.payload = [action.payload];
             actionsArray = [action];
         }
 
@@ -51,13 +53,11 @@ export class QueueService {
         if (items) {
             const actionsArray = JSON.parse(items);
             actionsArray.forEach(action => {
-                setTimeout(() => {
+                console.log(action);
                     this.store.dispatch(action);
-                }, 100)
             });
         }
-        //
-        // // @todo FOR NOW CLEAR ALL IN FEATURE NEED TO DELETE ACTIONS FROM STORAGE AFTER SUCCESS REQUEST
+        // @todo FOR NOW CLEAR ALL IN FEATURE NEED TO DELETE ACTIONS FROM STORAGE AFTER SUCCESS REQUEST
         localStorage.removeItem('unsyncedActions')
     }
 }

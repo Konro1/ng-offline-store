@@ -15,7 +15,7 @@ import {User} from './interfaces/user';
 export class AppComponent implements OnInit {
 
     public usersStore: Observable<User>;
-    public firstName = 'error';
+    public firstName = 'first';
     public lastName = 'last';
     public networkStatus;
 
