@@ -29,7 +29,7 @@ export function initQueueService(queueService: QueueService): any {
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '-lang.json');
+  return new TranslateHttpLoader(http, 'http://demo-redux-vadimn92.c9users.io/i18n/', '-lang.json');
 }
 
 @NgModule({
