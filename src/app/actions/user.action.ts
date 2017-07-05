@@ -15,6 +15,10 @@ export class UserActions extends QueuedActions {
     static GET_USER_COMMIT = 'GET_USER_COMMIT';
     static GET_USER_ROLLBACK = 'GET_USER_ROLLBACK';
 
+    static EDIT_USER_REQUEST = 'EDIT_USER_REQUEST';
+    static EDIT_USER_COMMIT = 'EDIT_USER_COMMIT';
+    static EDIT_USER_ROLLBACK = 'EDIT_USER_ROLLBACK';
+
     public static getAddUserAction(user) {
         return {
             type: UserActions.ADD_USER_REQUEST,
@@ -63,6 +67,21 @@ export class UserActions extends QueuedActions {
         return {
             type: UserActions.GET_USER_COMMIT,
             payload: users
+        };
+    }
+
+    public editUser(user: User) {
+        return {
+            type: UserActions.EDIT_USER_REQUEST,
+            payload: user,
+            meta: {
+                // the network action to execute:
+                effect: {url: '/api/users/' + user.localId, method: 'PUT', body: user},
+                // action to dispatch when effect succeeds:
+                commit: {type: UserActions.EDIT_USER_COMMIT, payload: user},
+                // action to dispatch if network action fails permanently:
+                rollback: {type: UserActions.EDIT_USER_ROLLBACK, payload: user}
+            }
         };
     }
 

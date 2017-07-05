@@ -6,8 +6,10 @@ import {NetworkService} from './services/network.service';
 import {AppState} from './interfaces/appstate';
 import {User} from './interfaces/user';
 import {TranslateService} from '@ngx-translate/core';
+import {QueuedActions} from "app/actions/queued.actions";
 
 declare let Quagga: any;
+declare let localforage: any;
 
 @Component({
     selector: 'app-root',
@@ -23,6 +25,8 @@ export class AppComponent implements OnInit {
     public firstName = 'first';
     public lastName = 'last';
     public networkStatus;
+    public queueStore: Observable<User>;
+    public userEdit;
 
     constructor(
         private store: Store<AppState>,
@@ -30,6 +34,7 @@ export class AppComponent implements OnInit {
         private networkService: NetworkService,
         private translate: TranslateService) {
         this.usersStore = store.select('user');
+        this.queueStore = store.select('queueStore');
         networkService.status.subscribe((isOnline: boolean) => this.networkStatus = isOnline);
 
         translate.addLangs(['en', 'fr', 'es']);
@@ -42,15 +47,37 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         const action = this.userActions.getUsers();
         this.store.dispatch(action);
+        // this.store.dispatch({type: QueuedActions.GET_FROM_QUEUE});
     }
 
     add() {
         const action = this.userActions.addUser({
+            localId: Date.now(),
             firstName: this.firstName,
             lastName: this.lastName,
             date: Date.now()
         });
 
         this.store.dispatch(action);
+    }
+
+    showEditUser(user: User) {
+        this.userEdit = user;
+    }
+
+    closeEdit() {
+        this.userEdit = null;
+    }
+
+    editUser(user: User) {
+        const action = this.userActions.editUser(user);
+        this.store.dispatch(action);
+    }
+
+    removeQueuedUser(localId) {
+        this.store.dispatch(this.userActions.getDeleteFromQueue({
+            localId: localId,
+            type: UserActions.ADD_USER_REQUEST_SYNC
+        }));
     }
 }

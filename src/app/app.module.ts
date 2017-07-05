@@ -15,12 +15,14 @@ import {NgxBarcodeModule} from 'ngx-barcode';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {EffectsModule} from '@ngrx/effects';
-import {UserEffects} from './effects/user';
+import effects from './effects';
 import {UserService} from './services/user.service';
 
 import * as localforage from 'localforage';
 import Quagga from 'quagga';
 import {TestComponent} from './test.component';
+import {UserEffects} from './effects/user';
+import {QueueEffects} from './effects/queue';
 
 export function initQueueService(queueService: QueueService): any {
     return () => {
@@ -52,7 +54,8 @@ export function HttpLoaderFactory(http: Http) {
             }
         }),
         EffectsModule,
-        EffectsModule.run(UserEffects)
+        EffectsModule.run(UserEffects),
+        EffectsModule.run(QueueEffects),
     ],
     providers: [
         { provide: 'localforage', useValue: localforage },

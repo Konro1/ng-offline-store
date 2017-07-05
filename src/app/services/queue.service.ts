@@ -17,7 +17,7 @@ export class QueueService {
         if (!this.subscription) {
             this.networkService.status.subscribe(isOnline => {
                 if (isOnline) {
-                    this.getStoredActions()
+                    this.processStoredActions()
                 }
             })
             this.subscription = true;
@@ -30,31 +30,55 @@ export class QueueService {
         });
     }
 
-    public saveActionInQue(action) {
-        localforage.getItem('unsyncedActions').then(items => {
-            let actionsArray = [];
-            if (items) {
-                actionsArray = JSON.parse(items);
-                actionsArray
-                    .filter((item) => item.type === action.type)
-                    .map(item => {
-                        item.payload.push(action.payload);
-                    })
+    public saveActionInQue(action, type = 'ADD') {
+        localforage.getItem('unsyncedActions').then(actions => {
+            if (actions) {
+                switch (type) {
+                    case 'EDIT':
+                        actions.forEach(storedAction => {
+                            const stored = storedAction.payload.find(inQueue => inQueue.localId === action.payload.localId);
+                            if (stored) {
+                                for(const val in action.payload) {
+                                    stored[val] = action.payload[val];
+                                }
+                                console.log(stored, actions);
+                            } else {
+
+                                // TODO FIX THIS
+                                actions.filter((item) => item.type === action.type)
+                                    .map(storedAction => {
+                                        storedAction.payload.forEach((value, index) => {
+                                            if (value.localId === action.payload.localId) {
+                                                storedAction.payload[index] = action.payload;
+                                            } else {
+                                                storedAction.payload.push(action.payload);
+                                            }
+                                        })
+                                    })
+                            }
+                        })
+                        break;
+
+                    case 'ADD':
+                        actions.filter((item) => item.type === action.type)
+                            .map(item => {
+                                item.payload.push(action.payload);
+                            })
+                        break;
+                }
+
             } else {
                 action.payload = [action.payload];
-                actionsArray = [action];
+                actions = [action];
             }
-            localforage.setItem('unsyncedActions', JSON.stringify(actionsArray));
+            localforage.setItem('unsyncedActions', actions);
         });
     }
 
-    private getStoredActions() {
-        console.log('___getStoredActions___');
-
-        localforage.getItem('unsyncedActions').then(items => {
-            if (items) {
-                const actionsArray = JSON.parse(items);
-                actionsArray.forEach(action => {
+    private processStoredActions() {
+        localforage.getItem('unsyncedActions').then(actions => {
+            if (actions) {
+                actions.forEach(action => {
                     this.store.dispatch(action);
                 });
             }
