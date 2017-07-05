@@ -4,6 +4,7 @@ CACHE:
 /inline.bundle.js
 /polyfills.bundle.js
 /styles.bundle.js
+/scripts.bundle.js
 /vendor.bundle.js
 /main.bundle.js
 /favicon.ico

@@ -13,6 +13,24 @@
 
 <input type="text" [(ngModel)]="value">
 <ngx-barcode [bc-value]="value" [bc-display-value]="true"></ngx-barcode>
+<qr-code *ngIf="value" [value]="value" [size]="150"></qr-code>
+
+
+<!--<qr-scanner
+  [debug]="false"
+  [canvasWidth]="640"
+  [canvasHeight]="480"
+  [mirror]="false"
+  [stopAfterScan]="true"
+  [updateTime]="500"
+  (onRead)="decodedOutput($event)"></qr-scanner>-->
+
+
 
 
 <div id="yourElement"></div>
+<app-test></app-test>
+
+<button (click)="startQuagga()">Start Stream</button>
+<div id="yourElement"></div>
+

@@ -8,6 +8,7 @@ import {AppState} from './interfaces/appstate';
 import {User} from './interfaces/user';
 
 declare let Quagga: any;
+declare let QRCode: any;
 
 @Component({
     selector: 'app-root',
@@ -31,7 +32,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         const action = this.userActions.getUsers();
-        this.httpService.makeRequest(this.usersStore, action)
+        this.httpService.makeRequest(this.usersStore, action);
         this.networkService.status.subscribe(isOnline => {this.networkStatus = isOnline});
 
 
@@ -54,6 +55,10 @@ export class AppComponent implements OnInit {
         console.log("Initialization finished. Ready to start");
         Quagga.start();
       });
+        this.store.dispatch(action);
+
+        this.initQuagga();
+        //this. initQRCode();
     }
 
     add() {
@@ -64,5 +69,37 @@ export class AppComponent implements OnInit {
         });
 
         this.httpService.makeRequest(this.usersStore, action)
+    }
+
+    initQuagga() {
+        Quagga.init({
+            inputStream : {
+                name : 'Live',
+                type : 'LiveStream',
+                target: document.querySelector('#yourElement')    // Or '#yourElement' (optional)
+            },
+            decoder : {
+                readers : ['code_128_reader']
+            }
+            }, function(err) {
+                if (err) {
+                  console.log(err);
+                  return
+                }
+              console.log('Initialization finished. Ready to start');
+        });
+    }
+
+  initQRCode() {
+      const qrcode = new QRCode(document.getElementById('qrcode'), 'http://jindo.dev.naver.com/collie');
+  }
+
+  decodedOutput(event) {
+      console.log(event);
+  }
+
+    startQuagga() {
+      console.log('startQuagga');
+       Quagga.start();
     }
 }

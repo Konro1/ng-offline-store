@@ -7,5 +7,5 @@ module.exports = {
     'dist/**.js',
     'dist/**.css'
   ],
-  maximumFileSizeToCacheInBytes: 3197152
+  maximumFileSizeToCacheInBytes: 3997152
 };

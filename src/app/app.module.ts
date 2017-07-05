@@ -17,6 +17,11 @@ import {NgxBarcodeModule} from 'ngx-barcode';
 
 import * as localforage from 'localforage';
 import Quagga from 'quagga';
+import {QRCodeModule} from 'angular2-qrcode';
+
+
+import {TestComponent} from './test.component';
+// import {QrScannerModule} from 'angular2-qrscanner/dist';
 
 export function initQueueService(queueService: QueueService): any {
     return () => {
@@ -34,7 +39,17 @@ export function initQueueService(queueService: QueueService): any {
         HttpModule,
         StoreModule.provideStore( reducer ),
         StoreDevtoolsModule.instrumentOnlyWithExtension(),
-        NgxBarcodeModule
+        NgxBarcodeModule,
+        TranslateModule.forRoot({
+            loader: {
+              provide: TranslateLoader,
+              useFactory: HttpLoaderFactory,
+              deps: [Http]
+            }
+        }),
+        EffectsModule,
+        EffectsModule.run(UserEffects),
+        QRCodeModule
     ],
     providers: [
         { provide: 'localforage', useValue: localforage },
