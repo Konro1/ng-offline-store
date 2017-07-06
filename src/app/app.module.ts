@@ -5,20 +5,22 @@ import {AppComponent} from './app.component';
 import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
+import {Http, HttpModule} from '@angular/http';
 import {UserActions} from './actions/user.action';
 import {HttpService} from './services/http.service';
 import reducer from './reducers/index';
 import {NetworkService} from './services/network.service';
 import {QueueService} from './services/queue.service';
-import {UnsyncedActions} from './actions/unsynced.action';
 import {NgxBarcodeModule} from 'ngx-barcode';
-
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {EffectsModule} from '@ngrx/effects';
+import {UserEffects} from './effects/user';
+import {UserService} from './services/user.service';
 
 import * as localforage from 'localforage';
 import Quagga from 'quagga';
 import {QRCodeModule} from 'angular2-qrcode';
-
 
 import {TestComponent} from './test.component';
 // import {QrScannerModule} from 'angular2-qrscanner/dist';
@@ -26,12 +28,17 @@ import {TestComponent} from './test.component';
 export function initQueueService(queueService: QueueService): any {
     return () => {
         return queueService.load();
-    }
+    }}
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: Http) {
+  return new TranslateHttpLoader(http, 'http://demo-redux-vadimn92.c9users.io/i18n/', '-lang.json');
 }
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        TestComponent
     ],
     imports: [
         BrowserModule,
@@ -55,8 +62,8 @@ export function initQueueService(queueService: QueueService): any {
         { provide: 'localforage', useValue: localforage },
         { provide: 'Quagga', useValue: Quagga },
         UserActions,
-        UnsyncedActions,
         HttpService,
+        UserService,
         NetworkService,
         QueueService,
         {

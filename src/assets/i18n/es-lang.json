@@ -1,0 +1,11 @@
+{
+  "HOME": {
+    "TITLE": "Hola, es una demostración!",
+    "SELECT": "Change language",
+    "ONLINE": "En línea",
+    "OFFLINE": "Desconectado",
+    "FIRST_NAME": "Nombre de pila",
+    "LAST_NAME": "Apellido",
+    "ADD": "Añadir"
+  }
+}
