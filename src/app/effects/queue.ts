@@ -3,22 +3,11 @@ import {Actions, Effect} from '@ngrx/effects';
 import {QueueService} from '../services/queue.service';
 import {QueuedActions} from '../actions/queued.actions';
 import {Observable} from 'rxjs/Observable';
-import {UserActions} from '../actions/user.action';
 
 declare let localforage: any;
 
 @Injectable()
 export class QueueEffects {
-    // @Effect() getQueuedItems = this.update$.ofType(QueuedActions.GET_FROM_QUEUE)
-    //     .mergeMap(action => {
-    //         console.log(action);
-    //         return this.queueService.getQueuedItems(UserActions.ADD_USER_REQUEST_SYNC)
-    //             .then(res => ({
-    //                 type: QueuedActions.GET_FROM_QUEUE_COMMIT,
-    //                 payload: res,
-    //             }));
-    //     });
-
     @Effect() deleteQueuedItem = this.update$.ofType(QueuedActions.DELETE_FROM_QUEUE)
         .mergeMap(action => {
             localforage.getItem('unsyncedActions').then(actions => {

@@ -61,12 +61,11 @@ export function userReducer(state = [], action: Action) {
 
         case UserActions.GET_USER_ROLLBACK:
             localforage.getItem('users').then(users => {
-                return JSON.parse(users) || state;
+                return users || state;
             })
             .catch(err => {
                 return state;
             });
-            break;
 
         default:
             return state;

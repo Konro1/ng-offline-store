@@ -8,6 +8,7 @@ import {UnsyncedAction} from '../interfaces/unsyncedAction';
 import {QueuedActions} from '../actions/queued.actions';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/switchMap';
+import {StorageService} from '../services/storage.service';
 
 @Injectable()
 export class UserEffects {
@@ -27,7 +28,13 @@ export class UserEffects {
                     })
                 })
         });
+    @Effect() getUsersCommit$ = this.update$
+        .ofType(UserActions.GET_USER_COMMIT)
+        .mergeMap(action => {
+            this.storageService.updateStorage('users', action.payload.users);
 
+            return Observable.of({type: 'SAVED'});
+        })
 
     @Effect() addUser$ = this.update$
         .ofType(UserActions.ADD_USER_REQUEST)
@@ -135,6 +142,7 @@ export class UserEffects {
     constructor(private update$: Actions,
                 private userService: UserService,
                 private queueService: QueueService,
-                private userActions: UserActions) {
+                private userActions: UserActions,
+                private storageService: StorageService) {
     }
 }

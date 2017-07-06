@@ -23,6 +23,7 @@ import Quagga from 'quagga';
 import {TestComponent} from './test.component';
 import {UserEffects} from './effects/user';
 import {QueueEffects} from './effects/queue';
+import {StorageService} from './services/storage.service';
 
 export function initQueueService(queueService: QueueService): any {
     return () => {
@@ -64,6 +65,7 @@ export function HttpLoaderFactory(http: Http) {
         HttpService,
         UserService,
         NetworkService,
+        StorageService,
         QueueService,
         {
             provide: APP_INITIALIZER,

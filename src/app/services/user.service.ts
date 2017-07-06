@@ -2,8 +2,6 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import {User} from '../interfaces/user';
-import {Store} from '@ngrx/store';
-import {AppState} from '../interfaces/appstate';
 
 @Injectable()
 export class UserService {
@@ -11,10 +9,10 @@ export class UserService {
     private BASE_URL = 'https://demo-redux-vadimn92.c9users.io';
     private syncedUsers = [];
 
-    constructor (private http: Http, private store: Store<AppState>) {}
+    constructor (private http: Http) {}
 
     public getUsers(): Observable<User[]> {
-        return this.http.get(this.BASE_URL + '/api/users')
+        return this.http.get(this.BASE_URL + '/aapi/users')
             .map(res => res.json());
     }
 
