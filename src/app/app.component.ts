@@ -9,6 +9,7 @@ import {TranslateService} from '@ngx-translate/core';
 
 declare let Quagga: any;
 declare let QRCode: any;
+declare let localforage: any;
 
 @Component({
     selector: 'app-root',
@@ -24,6 +25,8 @@ export class AppComponent implements OnInit {
     public firstName = 'first';
     public lastName = 'last';
     public networkStatus;
+    public queueStore: Observable<User>;
+    public userEdit;
 
     constructor(
         private store: Store<AppState>,
@@ -31,6 +34,7 @@ export class AppComponent implements OnInit {
         private networkService: NetworkService,
         private translate: TranslateService) {
         this.usersStore = store.select('user');
+        this.queueStore = store.select('queueStore');
         networkService.status.subscribe((isOnline: boolean) => this.networkStatus = isOnline);
 
         translate.addLangs(['en', 'fr', 'es']);
@@ -67,11 +71,12 @@ export class AppComponent implements OnInit {
         this.store.dispatch(action);
 
         this.initQuagga();*/
-        //this. initQRCode();
+        // this. initQRCode();
     }
 
     add() {
         const action = this.userActions.addUser({
+            localId: Date.now(),
             firstName: this.firstName,
             lastName: this.lastName,
             date: Date.now()
@@ -108,7 +113,32 @@ export class AppComponent implements OnInit {
   }
 
     startQuagga() {
-      console.log('startQuagga');
-       Quagga.start();
+        console.log('startQuagga');
+        Quagga.start();
+    }
+
+    showEditUser(user: User) {
+        this.userEdit = user;
+    }
+
+    closeEdit() {
+        this.userEdit = null;
+    }
+
+    editUser(user: User) {
+        const action = this.userActions.editUser(user);
+        this.store.dispatch(action);
+    }
+
+    deleteUser(user: User) {
+        const action = this.userActions.deleteUser(user);
+        this.store.dispatch(action);
+    }
+
+    removeQueuedUser(localId) {
+        this.store.dispatch(this.userActions.getDeleteFromQueue({
+            localId: localId,
+            type: UserActions.ADD_USER_REQUEST_SYNC
+        }));
     }
 }

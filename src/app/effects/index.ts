@@ -1,9 +1,12 @@
 import {UserEffects} from './user'
+import {QueueEffects} from './queue';
 
-export {
-    UserEffects
-};
+// export {
+//     UserEffects,
+//     QueueEffects,
+// };
 
 export default [
-    UserEffects
+    UserEffects,
+    QueueEffects
 ];

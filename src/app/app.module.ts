@@ -15,7 +15,7 @@ import {NgxBarcodeModule} from 'ngx-barcode';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {EffectsModule} from '@ngrx/effects';
-import {UserEffects} from './effects/user';
+import effects from './effects';
 import {UserService} from './services/user.service';
 
 import * as localforage from 'localforage';
@@ -24,6 +24,9 @@ import {QRCodeModule} from 'angular2-qrcode';
 
 import {TestComponent} from './test.component';
 // import {QrScannerModule} from 'angular2-qrscanner/dist';
+import {UserEffects} from './effects/user';
+import {QueueEffects} from './effects/queue';
+import {StorageService} from './services/storage.service';
 
 export function initQueueService(queueService: QueueService): any {
     return () => {
@@ -56,7 +59,8 @@ export function HttpLoaderFactory(http: Http) {
         }),
         EffectsModule,
         EffectsModule.run(UserEffects),
-        QRCodeModule
+        QRCodeModule,
+        EffectsModule.run(QueueEffects),
     ],
     providers: [
         { provide: 'localforage', useValue: localforage },
@@ -65,6 +69,7 @@ export function HttpLoaderFactory(http: Http) {
         HttpService,
         UserService,
         NetworkService,
+        StorageService,
         QueueService,
         {
             provide: APP_INITIALIZER,
