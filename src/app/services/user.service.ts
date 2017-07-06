@@ -34,7 +34,7 @@ export class UserService {
     }
 
     public deleteUser(user) {
-        return this.http.delete(this.BASE_URL + '/api/users/' + user.id)
+        return this.http.delete(this.BASE_URL + '/api/users/' + user.localId)
             .map(res => user);
     }
 
@@ -49,6 +49,44 @@ export class UserService {
             this.syncedUsers.push(response);
             if (index < users.length - 1) {
                 this.syncUsers(users, ++index);
+
+                return;
+            }
+        })
+        this.syncedUsers = [];
+
+        return Observable.of(this.syncedUsers);
+    }
+
+    public syncUsersEdit(users, index = 0) {
+        if (!users.length) {
+
+            return Observable.of(this.syncedUsers);
+        }
+
+        this.editUser(users[index]).subscribe((response) => {
+            this.syncedUsers.push(response);
+            if (index < users.length - 1) {
+                this.syncUsersEdit(users, ++index);
+
+                return;
+            }
+        })
+        this.syncedUsers = [];
+
+        return Observable.of(this.syncedUsers);
+    }
+
+    public syncUsersDelete(users, index = 0) {
+        if (!users.length) {
+
+            return Observable.of(this.syncedUsers);
+        }
+
+        this.deleteUser(users[index]).subscribe((response) => {
+            this.syncedUsers.push(response);
+            if (index < users.length - 1) {
+                this.syncUsersDelete(users, ++index);
 
                 return;
             }

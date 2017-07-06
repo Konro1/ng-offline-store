@@ -47,7 +47,6 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         const action = this.userActions.getUsers();
         this.store.dispatch(action);
-        // this.store.dispatch({type: QueuedActions.GET_FROM_QUEUE});
     }
 
     add() {
@@ -71,6 +70,11 @@ export class AppComponent implements OnInit {
 
     editUser(user: User) {
         const action = this.userActions.editUser(user);
+        this.store.dispatch(action);
+    }
+
+    deleteUser(user: User) {
+        const action = this.userActions.deleteUser(user);
         this.store.dispatch(action);
     }
 

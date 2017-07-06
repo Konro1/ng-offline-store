@@ -28,10 +28,10 @@
     <button (click)="editUser(userEdit)">{{ 'HOME.SAVE' | translate }}</button>
 
 </div>
-<h1>Queued data: </h1>
-<ul>
-    <li *ngFor="let queuedUser of queueStore | async">{{ queuedUser.firstName }} {{ queuedUser.lastName }} {{ queuedUser.date }} <button (click)="removeQueuedUser(queuedUser.localId)">remove from queue</button></li>
-</ul>
+<!--<h1>Queued data: </h1>-->
+<!--<ul>-->
+    <!--<li *ngFor="let queuedUser of queueStore | async">{{ queuedUser.firstName }} {{ queuedUser.lastName }} {{ queuedUser.date }} <button (click)="removeQueuedUser(queuedUser.localId)">remove from queue</button></li>-->
+<!--</ul>-->
 
 <input type="text" [(ngModel)]="value">
 <ngx-barcode [bc-value]="value" [bc-display-value]="true"></ngx-barcode>

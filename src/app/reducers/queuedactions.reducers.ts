@@ -4,7 +4,7 @@ import {QueuedActions} from '../actions/queued.actions';
 export function queuedActionsReducer(state = [], action: Action) {
     switch (action.type) {
 
-        case QueuedActions.SAVE_IN_QUEUE_ACTION:
+        case QueuedActions.SAVE_IN_QUEUE:
             return state.concat(action.payload);
 
         case QueuedActions.GET_FROM_QUEUE_COMMIT:

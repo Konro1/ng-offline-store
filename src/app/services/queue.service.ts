@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {NetworkService} from './network.service';
 import {Store} from '@ngrx/store';
 import {AppState} from '../interfaces/appstate';
+import {ObjectHelper} from '../helpers/object.helper';
 
 declare let localforage: any;
 
@@ -33,30 +34,55 @@ export class QueueService {
     public saveActionInQue(action, type = 'ADD') {
         localforage.getItem('unsyncedActions').then(actions => {
             if (actions) {
+                let storedToCreateItem = null;
+                let storedToEditItem = null;
+
                 switch (type) {
                     case 'EDIT':
-                        actions.forEach(storedAction => {
-                            const stored = storedAction.payload.find(inQueue => inQueue.localId === action.payload.localId);
-                            if (stored) {
-                                for(const val in action.payload) {
-                                    stored[val] = action.payload[val];
-                                }
-                                console.log(stored, actions);
+                        storedToCreateItem = this.findStoredItem(actions, action.meta.createAction, action.payload)
+                        if (storedToCreateItem) {
+                            ObjectHelper.updateFromObject(storedToCreateItem, action.payload);
+                        } else {
+                            storedToEditItem = this.findStoredItem(actions, action.meta.editAction, action.payload);
+                            if (storedToEditItem) {
+                                ObjectHelper.updateFromObject(storedToEditItem, action.payload);
                             } else {
-
-                                // TODO FIX THIS
-                                actions.filter((item) => item.type === action.type)
-                                    .map(storedAction => {
-                                        storedAction.payload.forEach((value, index) => {
-                                            if (value.localId === action.payload.localId) {
-                                                storedAction.payload[index] = action.payload;
-                                            } else {
-                                                storedAction.payload.push(action.payload);
-                                            }
-                                        })
-                                    })
+                                this.addOrUpdateAction(actions, action, action.meta.editAction);
                             }
-                        })
+                        }
+                        break;
+
+                    case 'DELETE':
+                        storedToCreateItem = this.findStoredItem(actions, action.meta.createAction, action.payload)
+                        storedToEditItem = this.findStoredItem(actions, action.meta.editAction, action.payload)
+                        if (storedToCreateItem) {
+                            const createActions = actions.find((stored) => stored.type === action.meta.createAction)
+                            createActions.payload.forEach((ac, index) => {
+                                if (ac.localId === action.payload.localId) {
+                                    createActions.payload.splice(index, 1);
+                                }
+                            });
+                            console.log(JSON.stringify(createActions.payload.length));
+                            if (!createActions.payload.length) {
+                                this.removeStoredActionByType(actions, action.meta.createAction);
+                            }
+                        }
+
+                        if (storedToEditItem) {
+                            const editActions = actions.find((stored) => stored.type === action.meta.editAction)
+                            editActions.payload.forEach((ac, index) => {
+                                if (ac.localId === action.payload.localId) {
+                                    editActions.payload.splice(index, 1);
+                                }
+                            });
+                            if (!editActions.payload.length) {
+                                this.removeStoredActionByType(actions, action.meta.editAction);
+                            }
+                        }
+
+                        if (!storedToCreateItem) {
+                            this.addOrUpdateAction(actions, action, action.meta.deleteAction);
+                        }
                         break;
 
                     case 'ADD':
@@ -66,13 +92,37 @@ export class QueueService {
                             })
                         break;
                 }
-
             } else {
                 action.payload = [action.payload];
                 actions = [action];
             }
             localforage.setItem('unsyncedActions', actions);
         });
+    }
+
+    private findStoredItem(actions, type, payload) {
+        const storedActions = actions.find((stored) => stored.type === type);
+        if (storedActions) {
+            return storedActions.payload.find(stored => stored.localId === payload.localId);
+        }
+    }
+
+    private addOrUpdateAction(actions, action, type) {
+        const storedActions = actions.find((stored) => stored.type === type);
+        if (storedActions) {
+            storedActions.payload.push(action.payload);
+        } else {
+            action.payload = [action.payload];
+            actions.push(action);
+        }
+    }
+
+    private removeStoredActionByType(actions, type) {
+        actions.forEach((action, index) => {
+            if (action.type === type) {
+                actions.splice(index, 1);
+            }
+        })
     }
 
     private processStoredActions() {
