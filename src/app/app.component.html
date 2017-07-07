@@ -16,10 +16,23 @@
 <input type="text" name="lastName" id="lastName" [(ngModel)]="lastName">
 <button (click)="add()">{{ 'HOME.ADD' | translate }}</button>
 
+<h1>Local store: </h1>
 <ul>
-    <li *ngFor="let user of usersStore | async">{{ user.firstName }} {{ user.lastName }} {{ user.date }}</li>
+    <li *ngFor="let user of usersStore | async">{{ user.firstName }} {{ user.lastName }} {{ user.date }} <button (click)="showEditUser(user)">edit</button><button (click)="deleteUser(user)">delete</button></li>
 </ul>
+<div *ngIf="userEdit">
+    <a (click)="closeEdit()" href="javascript:void(0)">x</a>
+    <label for="editFirstName">{{ 'HOME.FIRST_NAME' | translate }}</label>
+    <input type="text" name="firstName" id="editFirstName" [(ngModel)]="userEdit.firstName">
+    <label for="editLastName">{{ 'HOME.LAST_NAME' | translate }}</label>
+    <input type="text" name="lastName" id="editLastName" [(ngModel)]="userEdit.lastName">
+    <button (click)="editUser(userEdit)">{{ 'HOME.SAVE' | translate }}</button>
 
+</div>
+<!--<h1>Queued data: </h1>-->
+<!--<ul>-->
+    <!--<li *ngFor="let queuedUser of queueStore | async">{{ queuedUser.firstName }} {{ queuedUser.lastName }} {{ queuedUser.date }} <button (click)="removeQueuedUser(queuedUser.localId)">remove from queue</button></li>-->
+<!--</ul>-->
 
 <input type="text" [(ngModel)]="value">
 <ngx-barcode [bc-value]="value" [bc-display-value]="true" [bc-format]="CODE128"></ngx-barcode>
