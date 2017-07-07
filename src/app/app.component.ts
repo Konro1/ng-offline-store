@@ -32,12 +32,6 @@ export class AppComponent implements OnInit {
         private translate: TranslateService) {
         this.usersStore = store.select('user');
         networkService.status.subscribe((isOnline: boolean) => this.networkStatus = isOnline);
-
-        translate.addLangs(['en', 'fr', 'es']);
-        translate.setDefaultLang('en');
-
-        const browserLang = translate.getBrowserLang();
-        translate.use(browserLang.match(/en|fr|es/) ? browserLang : 'en');
     }
 
     ngOnInit(): void {
@@ -111,4 +105,53 @@ export class AppComponent implements OnInit {
       console.log('startQuagga');
        Quagga.start();
     }
+
+  openBarcodeImage() {
+    Quagga.decodeSingle({
+      src: '../assets/images/test.png',
+      numOfWorkers: 0,  // Needs to be 0 when used within node
+      inputStream: {
+        size: 800  // restrict input-size to be 800px in width (long-side)
+      },
+      decoder: {
+        readers: ['code_128_reader'] // List of active readers
+      },
+    }, function(result) {
+      if (result.codeResult) {
+        alert(result.codeResult.code);
+      } else {
+        alert('not detected');
+      }
+    });
+  }
+
+  openQRCode() {
+      /*console.log(Instascan);
+    const scanner = new Instascan.Scanner({ video: document.getElementById('yourElement') });
+    scanner.addListener('scan', function (content) {
+      console.log(content);
+    });
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        scanner.start(cameras[0]);
+      } else {
+        console.error('No cameras found.');
+      }
+    }).catch(function (e) {
+      console.error(e);
+    });*/
+  }
+
+  openBarcode() {
+    Quagga.decoder({readers: ['code_128_reader']})
+      .locator({patchSize: 'medium'})
+      .fromVideo({
+        target: document.querySelector('#yourElement'),
+        constraints: {
+          width: 800,
+          height: 600,
+          facingMode: "environment"
+        }
+      });
+  }
 }

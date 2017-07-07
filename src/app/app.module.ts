@@ -23,17 +23,26 @@ import Quagga from 'quagga';
 import {QRCodeModule} from 'angular2-qrcode';
 
 import {TestComponent} from './test.component';
+import {DictionaryService} from './services/dictionary.service';
+
 // import {QrScannerModule} from 'angular2-qrscanner/dist';
 
 export function initQueueService(queueService: QueueService): any {
     return () => {
         return queueService.load();
-    }}
+    }
+}
+
+export function initDictionaryService(dictionaryService: DictionaryService): any {
+  return () => {
+    return dictionaryService.initDictionary();
+  }
+}
 
 // AoT requires an exported function for factories
-export function HttpLoaderFactory(http: Http) {
-  return new TranslateHttpLoader(http, 'http://demo-redux-vadimn92.c9users.io/i18n/', '-lang.json');
-}
+/*export function HttpLoaderFactory(http: Http) {
+  return new TranslateHttpLoader(http,  'assets/i18n/', '-lang.json');
+}*/
 
 @NgModule({
     declarations: [
@@ -47,13 +56,7 @@ export function HttpLoaderFactory(http: Http) {
         StoreModule.provideStore( reducer ),
         StoreDevtoolsModule.instrumentOnlyWithExtension(),
         NgxBarcodeModule,
-        TranslateModule.forRoot({
-            loader: {
-              provide: TranslateLoader,
-              useFactory: HttpLoaderFactory,
-              deps: [Http]
-            }
-        }),
+        TranslateModule.forRoot(),
         EffectsModule,
         EffectsModule.run(UserEffects),
         QRCodeModule
@@ -63,6 +66,7 @@ export function HttpLoaderFactory(http: Http) {
         { provide: 'Quagga', useValue: Quagga },
         UserActions,
         HttpService,
+        DictionaryService,
         UserService,
         NetworkService,
         QueueService,
@@ -72,6 +76,12 @@ export function HttpLoaderFactory(http: Http) {
             deps: [QueueService],
             multi: true
         },
+        {
+          provide: APP_INITIALIZER,
+          useFactory: initDictionaryService,
+          deps: [DictionaryService],
+          multi: true
+        }
     ],
     bootstrap: [AppComponent]
 })
