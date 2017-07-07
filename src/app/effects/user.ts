@@ -81,6 +81,20 @@ export class UserEffects {
 
         });
 
+    @Effect() editUserRollback$ = this.update$
+        .ofType(UserActions.EDIT_USER_ROLLBACK)
+        .mergeMap(action => {
+            this.storageService.createOrUpdateItem('users', action.payload.localId, action.payload);
+           return Observable.of({ type: 'SAVED' });
+        });
+
+    @Effect() deleteUserRollback$ = this.update$
+        .ofType(UserActions.DELETE_USER_ROLLBACK)
+        .mergeMap(action => {
+            this.storageService.deleteItem('users', action.payload.localId);
+            return Observable.of({ type: 'SAVED' });
+        });
+
     @Effect() deleteUser$ = this.update$
         .ofType(UserActions.DELETE_USER_REQUEST)
         .mergeMap(action => {
