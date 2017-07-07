@@ -4,6 +4,9 @@ import {TranslateService} from '@ngx-translate/core';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/forkJoin';
 
 declare let localforage: any;
 
@@ -20,34 +23,32 @@ export class DictionaryService {
     this.subscribeChangeLang();
     return new Promise((resolve, reject) => {
       const langs = this.getLangs();
-      const currentLang = this.getCurrentLang();
+      const currentLang = Observable.fromPromise(this.getCurrentLang());
 
-      Promise.all([langs, currentLang])
-        .then((res) => {
-          let lang = res[1] || 'en';
-          console.log('translate.currentLang', this.translate.currentLang);
+      Observable.forkJoin(langs, currentLang)
+        .subscribe(res => {
+          const lang = res[1] || 'en';
           this.translate.addLangs(res[0]);
-          this.translate.setDefaultLang(lang);
+          this.translate.setDefaultLang(lang.toString());
           const browserLang = this.translate.getBrowserLang();
-          this.translate.use(browserLang.match(/en|fr|es/) ? lang : browserLang);
+          this.translate.use(browserLang.match(/en|fr|es/) ? lang.toString() : browserLang);
           this.getDictionary(lang)
             .then(dictionary => {
-              this.translate.setTranslation(lang, dictionary);
+              this.translate.setTranslation('en', dictionary);
               this.setDictionaryLocaly(lang, dictionary);
 
               resolve(true);
             });
-        }).catch(err => {
-        this.getDictionaryLocaly()
-          .then(res => {
-            this.translate.addLangs([res['lang']]);
-            this.translate.setDefaultLang(res['lang']);
-            this.translate.use(res['lang']);
-            this.translate.setTranslation(res['lang'], res['dictionary']);
-            resolve(true);
-          })
-      });
-
+        }, err => {
+          this.getDictionaryLocaly()
+            .then(res => {
+              this.translate.addLangs([res['lang']]);
+              this.translate.setDefaultLang(res['lang']);
+              this.translate.use(res['lang']);
+              this.translate.setTranslation(res['lang'], res['dictionary']);
+              resolve(true);
+            })
+        });
     });
   }
 
@@ -82,7 +83,6 @@ export class DictionaryService {
   }
   getLangs() {
     return this.http.get('http://demo-redux-vadimn92.c9users.io/langs')
-      .map(res => res.json())
-      .toPromise();
+      .map(res => res.json());
   }
 }
