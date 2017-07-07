@@ -10,6 +10,8 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/switchMap';
 import {StorageService} from '../services/storage.service';
 
+declare let localforage: any;
+
 @Injectable()
 export class UserEffects {
 
@@ -126,6 +128,17 @@ export class UserEffects {
                 .catch(error => {
                     return this.rollback(action);
                 })
+        })
+
+    @Effect() getUsersRollback$ = this.update$
+        .ofType(UserActions.GET_USER_ROLLBACK)
+        .mergeMap(action => {
+            return localforage.getItem('users').then(users => {
+                return {
+                    type: UserActions.GET_USER_ROLLBACK_COMMIT,
+                    payload: {users: users},
+                }
+            })
         })
 
     private rollback(action, actionType = 'ADD') {

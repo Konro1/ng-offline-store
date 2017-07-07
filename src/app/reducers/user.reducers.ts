@@ -59,13 +59,8 @@ export function userReducer(state = [], action: Action) {
             })
             return editSyncState;
 
-        case UserActions.GET_USER_ROLLBACK:
-            localforage.getItem('users').then(users => {
-                return users || state;
-            })
-            .catch(err => {
-                return state;
-            });
+        case UserActions.GET_USER_ROLLBACK_COMMIT:
+            return state.concat(action.payload.users);
 
         default:
             return state;

@@ -28,11 +28,10 @@ export class AppComponent implements OnInit {
     public queueStore: Observable<User>;
     public userEdit;
 
-    constructor(
-        private store: Store<AppState>,
-        private userActions: UserActions,
-        private networkService: NetworkService,
-        private translate: TranslateService) {
+    constructor(private store: Store<AppState>,
+                private userActions: UserActions,
+                private networkService: NetworkService,
+                private translate: TranslateService) {
         this.usersStore = store.select('user');
         this.queueStore = store.select('queueStore');
         networkService.status.subscribe((isOnline: boolean) => this.networkStatus = isOnline);
@@ -46,31 +45,30 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         const action = this.userActions.getUsers();
-        this.networkService.status.subscribe(isOnline => {this.networkStatus = isOnline});
+        this.networkService.status.subscribe(isOnline => {
+            this.networkStatus = isOnline
+        });
 
-
-
-
-      /*Quagga.init({
-        inputStream : {
-          name : "Live",
-          type : "LiveStream",
-          target: document.querySelector('#yourElement')    // Or '#yourElement' (optional)
-        },
-        decoder : {
-          readers : ["code_128_reader"]
-        }
-      }, function(err) {
-        if (err) {
-          console.log(err);
-          return
-        }
-        console.log("Initialization finished. Ready to start");
-        Quagga.start();
-      });
         this.store.dispatch(action);
+        /*Quagga.init({
+         inputStream : {
+         name : "Live",
+         type : "LiveStream",
+         target: document.querySelector('#yourElement')    // Or '#yourElement' (optional)
+         },
+         decoder : {
+         readers : ["code_128_reader"]
+         }
+         }, function(err) {
+         if (err) {
+         console.log(err);
+         return
+         }
+         console.log("Initialization finished. Ready to start");
+         Quagga.start();
+         });
 
-        this.initQuagga();*/
+         this.initQuagga();*/
         // this. initQRCode();
     }
 
@@ -87,30 +85,30 @@ export class AppComponent implements OnInit {
 
     initQuagga() {
         Quagga.init({
-            inputStream : {
-                name : 'Live',
-                type : 'LiveStream',
+            inputStream: {
+                name: 'Live',
+                type: 'LiveStream',
                 target: document.querySelector('#yourElement')    // Or '#yourElement' (optional)
             },
-            decoder : {
-                readers : ['code_128_reader']
+            decoder: {
+                readers: ['code_128_reader']
             }
-            }, function(err) {
-                if (err) {
-                  console.log(err);
-                  return
-                }
-              console.log('Initialization finished. Ready to start');
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return
+            }
+            console.log('Initialization finished. Ready to start');
         });
     }
 
-  initQRCode() {
-      const qrcode = new QRCode(document.getElementById('qrcode'), 'http://jindo.dev.naver.com/collie');
-  }
+    initQRCode() {
+        const qrcode = new QRCode(document.getElementById('qrcode'), 'http://jindo.dev.naver.com/collie');
+    }
 
-  decodedOutput(event) {
-      console.log(event);
-  }
+    decodedOutput(event) {
+        console.log(event);
+    }
 
     startQuagga() {
         console.log('startQuagga');

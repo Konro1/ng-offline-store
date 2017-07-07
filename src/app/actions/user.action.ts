@@ -14,6 +14,7 @@ export class UserActions extends QueuedActions {
     static GET_USER_REQUEST = 'GET_USER_REQUEST';
     static GET_USER_COMMIT = 'GET_USER_COMMIT';
     static GET_USER_ROLLBACK = 'GET_USER_ROLLBACK';
+    static GET_USER_ROLLBACK_COMMIT = 'GET_USER_ROLLBACK_COMMIT';
 
     static EDIT_USER_REQUEST = 'EDIT_USER_REQUEST';
     static EDIT_USER_COMMIT = 'EDIT_USER_COMMIT';
